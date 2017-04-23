@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Game of War</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+<body>		
+	<script charset="utf-8" type="text/javascript">
+
+		function getUrlVars(src) 
+		{
+			var vars = {};
+			var parts = src.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+			  vars[key] = value;
+			});
+			
+			return vars;
+		}
+
+		p1 = decodeURIComponent(getUrlVars(window.location.href)["p1"]);	// campaign_id
+		p3 = decodeURIComponent(getUrlVars(window.location.href)["p3"]);	// campaign_tier2_name 
+		if (p3.length && p3 != 'undefined') p3 = "&campaign_tier2_name=" + p3;
+		else p3 = "";
+		p4 = decodeURIComponent(getUrlVars(window.location.href)["p4"]);	// click_gender
+		if (p4.length && p4 != 'undefined') p4 = "&click_gender=" + p4;
+		else p4 = "";
+		p5 = decodeURIComponent(getUrlVars(window.location.href)["p5"]);	// site_id
+		p6 = decodeURIComponent(getUrlVars(window.location.href)["p6"]);	// creative_id
+		p7 = decodeURIComponent(getUrlVars(window.location.href)["p7"]);	// click_id
+		p8 = decodeURIComponent(getUrlVars(window.location.href)["p8"]);	// network_id
+		p9 = decodeURIComponent(getUrlVars(window.location.href)["p9"]);	// ad_size
+		p10 = decodeURIComponent(getUrlVars(window.location.href)["p10"]);	// cp_name2
+		if (p10.length && p10 != 'undefined') p10 = "&cp_name2=" + p10;
+		else p10 = "";
+		p11 = decodeURIComponent(getUrlVars(window.location.href)["p11"]);	// cp_name3
+		if (p11.length && p11 != 'undefined') p11 = "&cp_name3=" + p11;
+		else p11 = "";
+		p12 = decodeURIComponent(getUrlVars(window.location.href)["p12"]);	// cp_name4
+		if (p12.length && p12 != 'undefined') p12 = "&cp_name4=" + p12;
+		else p12 = "";		
+		p13 = decodeURIComponent(getUrlVars(window.location.href)["p13"]);	// mac_sha1
+		if (p13.length && p13 != 'undefined') p13 = "&mac_sha1=" + p13;
+		else p13 = "";
+		p14 = decodeURIComponent(getUrlVars(window.location.href)["p14"]);	// cp_name6
+		p15 = decodeURIComponent(getUrlVars(window.location.href)["p15"]);	// device_id_type
+		if (p15.length && p15 != 'undefined') p15 = "&device_id_type=" + p15;
+		else p15 = "";
+		p16 = decodeURIComponent(getUrlVars(window.location.href)["p16"]);	// android_id
+		if (p16.length && p16 != 'undefined') p16 = "&android_id=" + p16;
+		else p16 = "";
+		p18 = decodeURIComponent(getUrlVars(window.location.href)["p18"]);	// campaign_tier1_name
+		if (!p18.length || p18 == 'undefined');
+		p19 = decodeURIComponent(getUrlVars(window.location.href)["p19"]);	// campaign_tier1_value
+		if (!p19.length || p19 == 'undefined') {
+			p19 = "";
+		}
+		p17 = decodeURIComponent(getUrlVars(window.location.href)["p17"]);	// device_id
+
+		if (!p17.length || p17 == 'undefined')	// without IDFA
+		{		
+			var clickurl = "https://control.kochava.com/v1/cpi/click?campaign_id=" + p1 + "&campaign_tier1_value=" + p19 + "&campaign_tier1_name=" + p18 + p3 + p4 + "&site_id=" + p5 + "&creative_id=" + p6 + "&click_id=" + p7 + "&network_id=" + p8 + "&ad_size=" + p9 + p10 + p11 + p12 + p13 + "&cp_name6=" + p14 + p15 + p16 + "&device_id=device_id";
+		}
+		else
+		{
+			var clickurl = "https://control.kochava.com/v1/cpi/click?campaign_id=" + p1 + "&campaign_tier1_value=" + p19 + "&campaign_tier1_name=" + p18 + p3 + p4 + "&site_id=" + p5 + "&creative_id=" + p6 + "&click_id=" + p7 + "&network_id=" + p8 + "&ad_size=" + p9 + p10 + p11 + p12 + p13 + "&cp_name6=" + p14 + p15 + p16 + "&device_id=" + p17 + "&device_id_type=idfa";
+		}
+		var sn = "";
+    	var adInfo = {
+	        fps             : {
+	            lastFrameTime : undefined,
+	            frames        : [],
+	            recentFrames  : [],
+	            curr          : 0,
+	            max           : 0,
+	            min           : 0
+	        },
+	        bucket          	: "",
+	        lastMraidState  	: "",
+	        node				: "",
+	        bidId           	: "",
+	        campaignId      	: "",
+	        creativeId      	: "",
+	        deviceModel     	: "",
+	        idfa            	: "",
+	        appName         	: "",
+	        os              	: "",
+	        osVersion       	: "",
+	        ssp             	: "",
+	        
+          
+          Name        	: "",
+	        gameVersion     	: "",
+	        gameVendor      	: "",
+	        difficulty      	: "",
+	        version         	: "SG_1.1.0_JP",
+	        adDimension     	: "",
+	        sdkVersion      	: "",
+	        language        	: "en",
+	        sub3            	: "false",
+	        useProxy            : false,
+	        useErrorCallback    : false,
+	        debugOutput         : false,
+	        disableTracking	    : true,
+	        useCustomClickUrl 	: true,
+	        logToken            : ""
+    	};
+		
+		var GameOptions = {
+			milestone: [10, 30],
+			hideCloseButtonTime: 5,
+			countDownCloseButton: false,
+			preloaderStartCountdown: false,
+			didInteractTimeLimit: 15, 
+			didInteractTimeLimitEnabled: false,
+			
+			DISCLAIMER: {
+				Enabled:false, 
+				en: ""
+			},
+		};
+
+		var GameSettings = {
+			Portrait: {},
+			Landscape: {}
+		};
+		
+	</script>
+	<script charset="utf-8" id="gameloader" type="text/javascript" src="game.js"></script>
+	
+	<div id="gamebox">
+		<div id="preloader" align="center" style="display: block;">Connecting to Game Server...</div>
+		<canvas id="canvas"></canvas>
+	</div>
+</body>
+</html>
