@@ -1,0 +1,52 @@
+#!/bin/bash
+function helpScreen {
+  echo 'Usage: wineman [ARGUMENTS]'
+  echo 'Commands:'
+  echo '--run <program> - Run a program with the default prefix'
+  echo '--prefix <prefix name> <program> - Run a program with a custom prefix'
+  echo '--mprefix <prefix name> <architecture: 32/64> - Create a new prefix (defaults to 64-bit)'
+  echo '--rmprefix <prefix name> - Remove a prefix'
+  echo '--tricks <trick name> - Run winetricks command'
+  echo '--tricksp <prefix> <trick name> - Run winetricks command with custom prefix'
+  echo '--conf - Open winecfg'
+  echo '--confp <prefix> - Open winecfg with custom prefix'
+  echo '--help - Display this screen'
+}
+
+if [[ "$1" == *--run* ]]
+then
+  wine $2
+elif [[ "$1" == *--prefix* ]]
+then
+  WINEPREFIX="$HOME/$2" wine $3
+elif [[ "$1" == *--help* ]]
+then
+  helpScreen
+elif [[ "$1" == *--mprefix* ]]
+then
+  if [[ "$3" == *32* ]]
+  then
+    WINEARCH=win32 WINEPREFIX="$HOME/$2" wine wineboot
+  else
+    WINEPREFIX="$HOME/$2" wine wineboot
+  fi
+elif [[ "$1" == *--rmprefix* ]]
+then
+  rm -r "$HOME/$2"
+elif [[ "$1" == *--tricksp* ]]
+then
+  echo $2
+  echo $3
+  WINEPREFIX="$HOME/$2" winetricks $3
+elif [[ "$1" == *--tricks* ]]
+then
+  winetricks $2
+elif [[ "$1" == *--confp* ]]
+then
+  WINEPREFIX="$HOME/$2" winecfg
+elif [[ "$1" == *--conf* ]]
+then
+  winecfg
+else
+  helpScreen
+fi
